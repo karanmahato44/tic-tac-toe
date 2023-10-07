@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tictactoe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#1f1f1f] text-white">
+  <h2 class="text-center">tictactoe</h2>
+  <div class="gamecontainer flex flex-col items-center">
+    <div class="cellcontainer my-4 grid grid-cols-3 gap-2">
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="0">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="1">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="2">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="3">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="4">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="5">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="6">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="7">
+      </div>
+      <div class="cell w-32 h-32 border-gray-500 border-2 cursor-pointer text-8xl text-center" cellIndex="8">
+      </div>
+    </div>
+    <h2 class="statusText"></h2>
+    <button class="resetBtn rounded border-2 border-black p-2 bg-red-500 hover:bg-red-600 text-white">reset</button>
+  </div>
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    const statusText = document.querySelector('.statusText');
+    const resetBtn = document.querySelector('.resetBtn');
+
+    const winConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    let options = ['', '', '', '', '', '', '', '', '',];
+    let curretPlayer = 'X';
+    let running = false;
+
+    function initializeGame() {
+      cells.forEach((cell) => cell.addEventListener('click', cellClicked));
+      resetBtn.addEventListener('click', restartGame);
+      statusText.textContent = `${curretPlayer}'s turn`;
+      running = true;
+    }
+    initializeGame();
+
+
+    function cellClicked() {
+      const cellIndex = this.getAttribute('cellIndex');
+      if (options[cellIndex] !== "" || !running) {
+        return;
+      }
+      updateCell(this, cellIndex);
+      checkWinner();
+    }
+
+    function updateCell(cell, index) {
+      options[index] = curretPlayer;
+      cell.textContent = curretPlayer;
+
+    }
+
+    function changePlayer() {
+      curretPlayer = (curretPlayer === 'X') ? 'O' : 'X';
+      statusText.textContent = `${curretPlayer}'s turn`;
+
+    }
+
+    function checkWinner() {
+      let roundWon = false;
+      for (let i = 0; i < winConditions.length; i++) {
+        const condition = winConditions[i];
+        const cellA = options[condition[0]];
+        const cellB = options[condition[1]];
+        const cellC = options[condition[2]];
+
+        if (cellA === '' || cellB === '' || cellC === '') {
+          continue;
+        }
+
+        if (cellA === cellB && cellB === cellC) {
+          roundWon = true;
+          break;
+        }
+
+      }
+
+      if (roundWon) {
+        statusText.textContent = `${curretPlayer} wins!`;
+        running = false;
+      } else if (!options.includes('')) {
+        statusText.textContent = 'Draw!';
+        running = false;
+      } else {
+        changePlayer();
+      }
+    }
+
+    function restartGame() {
+      curretPlayer = 'X';
+      options = ['', '', '', '', '', '', '', '', '',];
+      statusText.textContent = `${curretPlayer}'s turn`;
+      cells.forEach(cell => cell.textContent = '');
+      running = true;
+    }
+  </script>
+</body>
+
+</html>
